@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz 4ª Elementare</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const BookOpen = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+        );
+
+        const Award = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <circle cx="12" cy="8" r="7"></circle>
+                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+            </svg>
+        );
+
+        const Trash2 = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+        );
+
+        const Plus = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+        );
+
+        const Download = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+        );
+
+        const Upload = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+        );
+
+        const Edit2 = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+            </svg>
+        );
+
+        const Save = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+        );
+
+        const X = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        );
+
+        const QuizApp = () => {
+            const [questions, setQuestions] = useState([
+                
+          { id: 1, question: "Quanto fa 7 x 8?", options: ["54","56","63","64"], correct: 1, subject: "Matematica" },
+  { id: 2, question: "Qual è il capoluogo della Lombardia?", options: ["Torino","Milano","Venezia","Bologna"], correct: 1, subject: "Geografia" },
+  { id: 3, question: "Come si chiama il verbo che esprime un'azione?", options: ["Nome","Aggettivo","Verbo","Articolo"], correct: 2, subject: "Italiano" },
+  { id: 4, question: "Quale pianeta è chiamato il 'Pianeta Rosso'?", options: ["Venere","Giove","Marte","Saturno"], correct: 2, subject: "Scienze" },
+  { id: 5, question: "Quanto fa 9 x 6?", options: ["54","56","63","64"], correct: 0, subject: "Matematica" },
+  { id: 6, question: "Qual è il fiume più lungo d'Italia?", options: ["Po","Arno","Tevere","Adige"], correct: 0, subject: "Geografia" },
+  { id: 7, question: "Quale segno di punteggiatura chiude una domanda?", options: ["Punto","Virgola","Punto interrogativo","Due punti"], correct: 2, subject: "Italiano" },
+  { id: 8, question: "Quale pianeta è il più vicino al Sole?", options: ["Venere","Mercurio","Terra","Marte"], correct: 1, subject: "Scienze" },
+  { id: 9, question: "Chi era il primo re di Roma secondo la leggenda?", options: ["Romolo","Remo","Numa Pompilio","Tarquinio"], correct: 0, subject: "Storia" },
+  { id: 10, question: "Quanto fa 48 ÷ 8?", options: ["5","6","7","8"], correct: 1, subject: "Matematica" },
+  { id: 11, question: "Qual è il capoluogo della Sicilia?", options: ["Catania","Palermo","Messina","Siracusa"], correct: 1, subject: "Geografia" },
+  { id: 12, question: "Quale parte del discorso indica una qualità?", options: ["Nome","Aggettivo","Verbo","Avverbio"], correct: 1, subject: "Italiano" },
+  { id: 13, question: "Quale pianeta ha gli anelli più visibili?", options: ["Giove","Saturno","Urano","Nettuno"], correct: 1, subject: "Scienze" },
+  { id: 14, question: "Chi scoprì l'America nel 1492?", options: ["Cristoforo Colombo","Marco Polo","Amerigo Vespucci","Magellano"], correct: 0, subject: "Storia" },
+  { id: 15, question: "Quanto fa 12 x 12?", options: ["124","144","132","156"], correct: 1, subject: "Matematica" },
+  { id: 16, question: "Quale mare bagna la costa orientale dell'Italia?", options: ["Mar Tirreno","Mar Ionio","Mar Adriatico","Mar Ligure"], correct: 2, subject: "Geografia" },
+  { id: 17, question: "Quale parte del discorso serve a collegare le frasi?", options: ["Congiunzione","Aggettivo","Articolo","Nome"], correct: 0, subject: "Italiano" },
+  { id: 18, question: "Quale pianeta è il più grande del Sistema Solare?", options: ["Saturno","Giove","Urano","Nettuno"], correct: 1, subject: "Scienze" },
+  { id: 19, question: "Chi attraversò le Alpi con gli elefanti?", options: ["Annibale","Scipione","Cesare","Alessandro Magno"], correct: 0, subject: "Storia" },
+  { id: 20, question: "Quanto fa 100 ÷ 25?", options: ["2","3","4","5"], correct: 2, subject: "Matematica" },
+  { id: 21, question: "Qual è il capoluogo della Toscana?", options: ["Pisa","Firenze","Siena","Livorno"], correct: 1, subject: "Geografia" },
+  { id: 22, question: "Quale parte del discorso indica un oggetto o una persona?", options: ["Nome","Aggettivo","Verbo","Avverbio"], correct: 0, subject: "Italiano" },
+  { id: 23, question: "Quale pianeta è chiamato 'gigante gassoso' insieme a Saturno?", options: ["Giove","Marte","Venere","Terra"], correct: 0, subject: "Scienze" },
+  { id: 24, question: "Chi fu il primo imperatore romano?", options: ["Cesare","Augusto","Nerone","Traiano"], correct: 1, subject: "Storia" },
+  { id: 25, question: "Quanto fa 15 x 3?", options: ["30","35","40","45"], correct: 3, subject: "Matematica" },
+  { id: 26, question: "Qual è il capoluogo della Campania?", options: ["Napoli","Salerno","Caserta","Avellino"], correct: 0, subject: "Geografia" },
+  { id: 27, question: "Quale parte del discorso accompagna il nome e lo determina?", options: ["Aggettivo","Verbo","Articolo","Congiunzione"], correct: 2, subject: "Italiano" },
+  { id: 28, question: "Quale pianeta ha un giorno più lungo di un anno?", options: ["Venere","Marte","Giove","Saturno"], correct: 0, subject: "Scienze" },
+  { id: 29, question: "Chi sconfisse Annibale a Zama?", options: ["Scipione l'Africano","Cesare","Pompeo","Augusto"], correct: 0, subject: "Storia" },
+  { id: 30, question: "Quanto fa 72 ÷ 9?", options: ["6","7","8","9"], correct: 2, subject: "Matematica" },
+  { id: 31, question: "Qual è il capoluogo del Piemonte?", options: ["Torino","Milano","Genova","Aosta"], correct: 0, subject: "Geografia" },
+  { id: 32, question: "Quale parte del discorso indica il modo in cui si compie un'azione?", options: ["Avverbio","Aggettivo","Nome","Congiunzione"], correct: 0, subject: "Italiano" },
+  { id: 33, question: "Quale pianeta è famoso per i suoi venti fortissimi?", options: ["Urano","Nettuno","Giove","Saturno"], correct: 1, subject: "Scienze" },
+  { id: 34, question: "Chi era il condottiero macedone che conquistò gran parte del mondo conosciuto?", options: ["Alessandro Magno","Cesare","Annibale","Augusto"], correct: 0, subject: "Storia" },
+  { id: 35, question: "Quanto fa 8 x 11?", options: ["88","86","90","84"], correct: 0, subject: "Matematica" },
+  { id: 36, question: "Qual è il capoluogo della Liguria?", options: ["Genova","Savona","La Spezia","Imperia"], correct: 0, subject: "Geografia" },
+  { id: 37, question: "Quale parte del discorso indica possesso?", options: ["Aggettivo possessivo","Nome","Verbo","Congiunzione"], correct: 0, subject: "Italiano" },
+  { id: 38, question: "Quale pianeta è chiamato 'gemello della Terra'?", options: ["Venere","Marte","Giove","Mercurio"], correct: 0, subject: "Scienze" },
+  { id: 39, question: "Chi scrisse la Divina Commedia?", options: ["Petrarca","Boccaccio","Dante Alighieri","Manzoni"], correct: 2, subject: "Italiano" },
+{ id: 40, question: "Quanto fa 81 ÷ 9?", options: ["7", "8", "9", "10"], correct: 2, subject: "Matematica" },
+{ id: 41, question: "Qual è il capoluogo della Sardegna?", options: ["Cagliari", "Sassari", "Olbia", "Nuoro"], correct: 0, subject: "Geografia" },
+{ id: 42, question: "Quale parte del discorso indica un'azione compiuta?", options: ["Nome", "Aggettivo", "Verbo", "Articolo"], correct: 2, subject: "Italiano" },
+{ id: 43, question: "Quale pianeta ha il giorno più corto?", options: ["Giove", "Saturno", "Marte", "Venere"], correct: 0, subject: "Scienze" },
+{ id: 44, question: "Chi fu considerato il fondatore dell'Impero Romano?", options: ["Romolo", "Cesare", "Augusto", "Nerone"], correct: 2, subject: "Storia" },
+{ id: 45, question: "Quanto fa 25 x 4?", options: ["50", "75", "100", "125"], correct: 2, subject: "Matematica" },
+{ id: 46, question: "Qual è il capoluogo del Veneto?", options: ["Padova", "Verona", "Venezia", "Treviso"], correct: 2, subject: "Geografia" },
+{ id: 47, question: "Quale parte del discorso indica quantità?", options: ["Aggettivo numerale", "Nome", "Verbo", "Congiunzione"], correct: 0, subject: "Italiano" },
+{ id: 48, question: "Quale pianeta è noto per la Grande Macchia Rossa?", options: ["Saturno", "Giove", "Urano", "Nettuno"], correct: 1, subject: "Scienze" },
+{ id: 49, question: "Chi fu il generale romano che attraversò il Rubicone?", options: ["Cesare", "Pompeo", "Augusto", "Traiano"], correct: 0, subject: "Storia" },
+{ id: 50, question: "Quanto fa 11 x 11?", options: ["111", "121", "131", "141"], correct: 1, subject: "Matematica" },
+            ]);
+
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [score, setScore] = useState(0);
+            const [showResult, setShowResult] = useState(false);
+            const [quizStarted, setQuizStarted] = useState(false);
+            const [showEditor, setShowEditor] = useState(false);
+            const [editingQuestion, setEditingQuestion] = useState(null);
+            const [newQuestion, setNewQuestion] = useState({
+                question: '',
+                options: ['', '', '', ''],
+                correct: 0,
+                subject: 'Matematica'
+            });
+
+            const subjects = ['Matematica', 'Italiano', 'Geografia', 'Religione', 'Scienze', 'Storia', 'Inglese'];
+
+            const handleAnswer = (index) => {
+                if (selectedAnswer !== null) return;
+                
+                setSelectedAnswer(index);
+                if (index === questions[currentQuestion].correct) {
+                    setScore(score + 1);
+                }
+
+                setTimeout(() => {
+                    if (currentQuestion < questions.length - 1) {
+                        setCurrentQuestion(currentQuestion + 1);
+                        setSelectedAnswer(null);
+                    } else {
+                        setShowResult(true);
+                    }
+                }, 1500);
+            };
+
+            const restartQuiz = () => {
+                setCurrentQuestion(0);
+                setSelectedAnswer(null);
+                setScore(0);
+                setShowResult(false);
+                setQuizStarted(false);
+            };
+
+            const deleteQuestion = (id) => {
+                if (questions.length <= 1) {
+                    alert('Devi avere almeno una domanda nel quiz!');
+                    return;
+                }
+                setQuestions(questions.filter(q => q.id !== id));
+            };
+
+            const deleteAllQuestions = () => {
+                const confirmed = window.confirm('Sei sicuro di voler cancellare tutte le domande? Questa azione non può essere annullata.');
+                if (confirmed) {
+                    const defaultQuestion = {
+                        id: Date.now(),
+                        question: "Quanto fa 5 + 5?",
+                        options: ["8", "9", "10", "11"],
+                        correct: 2,
+                        subject: "Matematica"
+                    };
+                    setQuestions([defaultQuestion]);
+                    setCurrentQuestion(0);
+                    setSelectedAnswer(null);
+                    setScore(0);
+                    setShowResult(false);
+                    setQuizStarted(false);
+                    alert('Tutte le domande sono state cancellate!');
+                }
+            };
+
+            const addQuestion = () => {
+                if (!newQuestion.question.trim() || newQuestion.options.some(opt => !opt.trim())) {
+                    alert('Compila tutti i campi!');
+                    return;
+                }
+
+                const questionToAdd = {
+                    id: Date.now(),
+                    ...newQuestion
+                };
+
+                setQuestions([...questions, questionToAdd]);
+                setNewQuestion({
+                    question: '',
+                    options: ['', '', '', ''],
+                    correct: 0,
+                    subject: 'Matematica'
+                });
+                setShowEditor(false);
+            };
+
+            const updateQuestion = () => {
+                if (!newQuestion.question.trim() || newQuestion.options.some(opt => !opt.trim())) {
+                    alert('Compila tutti i campi!');
+                    return;
+                }
+
+                setQuestions(questions.map(q => 
+                    q.id === editingQuestion.id ? { ...editingQuestion, ...newQuestion } : q
+                ));
+                setEditingQuestion(null);
+                setNewQuestion({
+                    question: '',
+                    options: ['', '', '', ''],
+                    correct: 0,
+                    subject: 'Matematica'
+                });
+                setShowEditor(false);
+            };
+
+            const startEdit = (question) => {
+                setEditingQuestion(question);
+                setNewQuestion({
+                    question: question.question,
+                    options: [...question.options],
+                    correct: question.correct,
+                    subject: question.subject
+                });
+                setShowEditor(true);
+            };
+
+            const cancelEdit = () => {
+                setEditingQuestion(null);
+                setNewQuestion({
+                    question: '',
+                    options: ['', '', '', ''],
+                    correct: 0,
+                    subject: 'Matematica'
+                });
+                setShowEditor(false);
+            };
+
+            const exportQuestions = () => {
+                try {
+                    const dataStr = JSON.stringify(questions, null, 2);
+                    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(dataBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'quiz-domande.json';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    alert('File esportato con successo!');
+                } catch (error) {
+                    console.error('Errore export:', error);
+                    alert('Errore durante l\'esportazione!');
+                }
+            };
+
+            const importQuestions = (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const imported = JSON.parse(e.target.result);
+                        if (Array.isArray(imported) && imported.length > 0) {
+                            setQuestions(imported);
+                            restartQuiz();
+                            alert('Domande importate con successo!');
+                        } else {
+                            alert('File non valido!');
+                        }
+                    } catch (error) {
+                        alert('Errore nella lettura del file!');
+                    }
+                };
+                reader.readAsText(file);
+                event.target.value = '';
+            };
+
+            if (!quizStarted && !showEditor) {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-400 to-red-400 p-4 flex items-center justify-center">
+                        <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full">
+                            <div className="text-center mb-8">
+                                <div className="inline-block bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full p-4 mb-4">
+                                    <BookOpen size={48} className="text-white" />
+                                </div>
+                                <h1 className="text-4xl font-bold text-gray-800 mb-2">
+                                    Quiz 4ª Elementare
+                                </h1>
+                                <p className="text-gray-600 text-lg">
+                                    Metti alla prova le tue conoscenze!
+                                </p>
+                            </div>
+
+                            <div className="bg-blue-50 rounded-2xl p-6 mb-6">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-xl font-bold text-gray-700">Domande disponibili: {questions.length}</h3>
+                                </div>
+                                <div className="grid grid-cols-2 gap-2 text-sm">
+                                    {Array.from(new Set(questions.map(q => q.subject))).map(subject => (
+                                        <div key={subject} className="bg-white rounded-lg p-2 text-center">
+                                            <span className="font-semibold text-gray-700">{subject}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={() => setQuizStarted(true)}
+                                className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold py-4 rounded-2xl hover:shadow-lg transform hover:scale-105 transition-all mb-4 text-xl"
+                            >
+                                Inizia il Quiz! 🚀
+                            </button>
+
+                            <div className="grid grid-cols-2 gap-4 mb-4">
+                                <button
+                                    onClick={() => setShowEditor(true)}
+                                    className="bg-gradient-to-r from-blue-400 to-blue-600 text-white font-semibold py-3 rounded-xl hover:shadow-lg transform hover:scale-105 transition-all flex items-center justify-center gap-2"
+                                >
+                                    <Plus size={20} /> Aggiungi
+                                </button>
+                                <button
+                                    onClick={exportQuestions}
+                                    className="bg-gradient-to-r from-green-400 to-green-600 text-white font-semibold py-3 rounded-xl hover:shadow-lg transform hover:scale-105 transition-all flex items-center justify-center gap-2"
+                                >
+                                    <Download size={20} /> Esporta
+                                </button>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <label className="bg-gradient-to-r from-purple-400 to-purple-600 text-white font-semibold py-3 rounded-xl hover:shadow-lg transform hover:scale-105 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                                    <Upload size={20} /> Importa
+                                    <input
+                                        type="file"
+                                        accept=".json"
+                                        onChange={importQuestions}
+                                        className="hidden"
+                                    />
+                                </label>
+                                <button
+                                    onClick={deleteAllQuestions}
+                                    className="bg-gradient-to-r from-red-400 to-red-600 text-white font-semibold py-3 rounded-xl hover:shadow-lg transform hover:scale-105 transition-all flex items-center justify-center gap-2"
+                                >
+                                    <Trash2 size={20} /> Cancella Tutto
+                                </button>
+                            </div>
+
+                            <div className="mt-6 max-h-64 overflow-y-auto bg-gray-50 rounded-xl p-4">
+                                <h4 className="font-bold text-gray-700 mb-3">Gestisci Domande:</h4>
+                                {questions.map((q, index) => (
+                                    <div key={q.id} className="bg-white rounded-lg p-3 mb-2 flex items-center justify-between shadow-sm">
+                                        <div className="flex-1">
+                                            <span className="text-sm font-semibold text-purple-600">{q.subject}</span>
+                                            <p className="text-gray-700 text-sm">{index + 1}. {q.question.substring(0, 50)}...</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => startEdit(q)}
+                                                className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition-colors"
+                                            >
+                                                <Edit2 size={16} />
+                                            </button>
+                                            <button
+                                                onClick={() => deleteQuestion(q.id)}
+                                                className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition-colors"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (showEditor) {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-blue-400 via-indigo-400 to-purple-400 p-4 flex items-center justify-center">
+                        <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full">
+                            <div className="flex items-center justify-between mb-6">
+                                <h2 className="text-3xl font-bold text-gray-800">
+                                    {editingQuestion ? 'Modifica Domanda' : 'Nuova Domanda'}
+                                </h2>
+                                <button
+                                    onClick={cancelEdit}
+                                    className="text-gray-500 hover:text-gray-700"
+                                >
+                                    <X size={28} />
+                                </button>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-gray-700 font-semibold mb-2">Materia:</label>
+                                    <select
+                                        value={newQuestion.subject}
+                                        onChange={(e) => setNewQuestion({ ...newQuestion, subject: e.target.value })}
+                                        className="w-full p-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+                                    >
+                                        {subjects.map(s => (
+                                            <option key={s} value={s}>{s}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="block text-gray-700 font-semibold mb-2">Domanda:</label>
+                                    <input
+                                        type="text"
+                                        value={newQuestion.question}
+                                        onChange={(e) => setNewQuestion({ ...newQuestion, question: e.target.value })}
+                                        className="w-full p-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+                                        placeholder="Scrivi qui la domanda..."
+                                    />
+                                </div>
+
+                                {newQuestion.options.map((option, index) => (
+                                    <div key={index}>
+                                        <label className="block text-gray-700 font-semibold mb-2">
+                                            Opzione {index + 1}:
+                                            <input
+                                                type="radio"
+                                                name="correct"
+                                                checked={newQuestion.correct === index}
+                                                onChange={() => setNewQuestion({ ...newQuestion, correct: index })}
+                                                className="ml-2"
+                                            />
+                                            <span className="text-green-600 text-sm ml-1">(Risposta corretta)</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={option}
+                                            onChange={(e) => {
+                                                const newOptions = [...newQuestion.options];
+                                                newOptions[index] = e.target.value;
+                                                setNewQuestion({ ...newQuestion, options: newOptions });
+                                            }}
+                                            className="w-full p-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+                                            placeholder={`Opzione ${index + 1}...`}
+                                        />
+                                    </div>
+                                ))}
+
+                                <button
+                                    onClick={editingQuestion ? updateQuestion : addQuestion}
+                                    className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold py-4 rounded-2xl hover:shadow-lg transform hover:scale-105 transition-all flex items-center justify-center gap-2"
+                                >
+                                    <Save size={24} />
+                                    {editingQuestion ? 'Salva Modifiche' : 'Aggiungi Domanda'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (showResult) {
+                const percentage = Math.round((score / questions.length) * 100);
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-400 to-purple-400 p-4 flex items-center justify-center">
+                        <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full text-center">
+                            <div className="inline-block bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full p-6 mb-6">
+                                <Award size={64} className="text-white" />
+                            </div>
+                            
+                            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+                                Quiz Completato! 🎉
+                            </h2>
+                            
+                            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 mb-6">
+                                <p className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-2">
+                                    {score}/{questions.length}
+                                </p>
+                                <p className="text-2xl text-gray-700 font-semibold">
+                                    {percentage}% Corretto
+                                </p>
+                            </div>
+
+                            <div className="mb-6">
+                                {percentage >= 80 && (
+                                    <p className="text-xl text-green-600 font-bold">Eccellente! 🌟</p>
+                                )}
+                                {percentage >= 60 && percentage < 80 && (
+                                    <p className="text-xl text-blue-600 font-bold">Molto bene! 👍</p>
+                                )}
+                                {percentage < 60 && (
+                                    <p className="text-xl text-orange-600 font-bold">Continua a studiare! 📚</p>
+                                )}
+                            </div>
+
+                            <button
+                                onClick={restartQuiz}
+                                className="bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold py-4 px-8 rounded-2xl hover:shadow-lg transform hover:scale-105 transition-all text-xl"
+                            >
+                                Gioca Ancora! 🔄
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            const question = questions[currentQuestion];
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 p-4 flex items-center justify-center">
+                    <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full">
+                        <div className="flex justify-between items-center mb-6">
+                            <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-full font-bold">
+                                {question.subject}
+                            </div>
+                            <div className="text-gray-600 font-semibold">
+                                Domanda {currentQuestion + 1}/{questions.length}
+                            </div>
+                        </div>
+
+                        <div className="mb-8">
+                            <div className="h-3 bg-gray-200 rounded-full overflow-hidden mb-6">
+                                <div
+                                    className="h-full bg-gradient-to-r from-green-400 to-blue-500 transition-all duration-300"
+                                    style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
+                                />
+                            </div>
+
+                            <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                                {question.question}
+                            </h2>
+
+                            <div className="space-y-3">
+                                {question.options.map((option, index) => {
+                                    let buttonClass = "w-full p-4 rounded-xl font-semibold text-left transition-all transform hover:scale-105 ";
+                                    
+                                    if (selectedAnswer === null) {
+                                        buttonClass += "bg-gradient-to-r from-blue-100 to-purple-100 hover:from-blue-200 hover:to-purple-200 text-gray-800";
+                                    } else if (index === question.correct) {
+                                        buttonClass += "bg-gradient-to-r from-green-400 to-green-500 text-white shadow-lg";
+                                    } else if (index === selectedAnswer) {
+                                        buttonClass += "bg-gradient-to-r from-red-400 to-red-500 text-white shadow-lg";
+                                    } else {
+                                        buttonClass += "bg-gray-200 text-gray-600";
+                                    }
+
+                                    return (
+                                        <button
+                                            key={index}
+                                            onClick={() => handleAnswer(index)}
+                                            disabled={selectedAnswer !== null}
+                                            className={buttonClass}
+                                        >
+                                            <span className="font-bold mr-2">{String.fromCharCode(65 + index)}.</span>
+                                            {option}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <div className="flex justify-between items-center text-gray-600">
+                            <div className="font-semibold">
+                                Punteggio: {score}
+                            </div>
+                            <button
+                                onClick={restartQuiz}
+                                className="text-sm underline hover:text-gray-800"
+                            >
+                                Ricomincia
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<QuizApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
